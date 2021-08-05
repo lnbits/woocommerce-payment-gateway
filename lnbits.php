@@ -21,7 +21,7 @@ use LNBitsPlugin\LNBitsAPI;
 
 // Helper to render templates under ./templates.
 function render_template($tpl_name, $params) {
-    return wc_get_template($tpl_name, $params, '', plugin_dir_path(__FILE__).'templates/');
+    return wc_get_template_html($tpl_name, $params, '', plugin_dir_path(__FILE__).'templates/');
 }
 
 
@@ -123,7 +123,7 @@ function lnbits_init() {
                     'title' => __('Description', 'woocommerce'),
                     'type' => 'textarea',
                     'description' => __('The payment method description which a customer sees at the checkout of your store.', 'woocommerce'),
-                    'default' => __('Powered by LNBits'),
+                    'default' => __('Powered by LNBits. You can use any Lightning wallet to pay.'),
                 ),
                 'lnbits_api_key' => array(
                     'title' => __('LNBits API Key', 'woocommerce'),
