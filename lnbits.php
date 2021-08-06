@@ -6,7 +6,7 @@ Plugin URI: https://lnbits.org
 Description: Accept Bitcoin over Lightning instantly and without fees
 Version: 0.0.1
 Author: Phaedrus
-Author URI: https://gitlab.com
+Author URI: https://gitlab.com/sovereign-individuals/lnbits-for-woocommerce
 */
 
 
