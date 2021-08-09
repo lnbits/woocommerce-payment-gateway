@@ -12,11 +12,38 @@ Author URI: https://gitlab.com/sovereign-individuals
 
 add_action('plugins_loaded', 'lnbits_init');
 
+define('LNBITS_PAYMENT_PAGE_SLUG', 'lnbits_payment');
+
 
 require_once(__DIR__ . '/includes/init.php');
 
 use LNBitsPlugin\Utils;
 use LNBitsPlugin\LNBitsAPI;
+
+
+
+function woocommerce_lnbits_activate() {
+    if (!current_user_can('activate_plugins')) return;
+
+    global $wpdb;
+
+    if ( null === $wpdb->get_row( "SELECT post_name FROM {$wpdb->prefix}posts WHERE post_name = '".LNBITS_PAYMENT_PAGE_SLUG."'", 'ARRAY_A' ) ) {
+        $page = array(
+          'post_title'  => __( 'Lightning Payment' ),
+          'post_name' => LNBITS_PAYMENT_PAGE_SLUG,
+          'post_status' => 'publish',
+          'post_author' => wp_get_current_user()->ID,
+          'post_type'   => 'page',
+          // TODO: move into a template
+          'post_content' => '<!-- wp:paragraph --><p>Please scan this QR code with your Lightning wallet such as Strike, Wallet of Satoshi, Breez, or any other.</p><!-- /wp:paragraph --><!-- wp:paragraph --><p>After paying in your wallet, you will automatically be redirected.</p><!-- /wp:paragraph --><!-- wp:shortcode -->[lnbits_payment_shortcode]<!-- /wp:shortcode -->'
+        );
+
+        // insert the post into the database
+        wp_insert_post( $page );
+    }
+}
+
+register_activation_hook(__FILE__, 'woocommerce_lnbits_activate');
 
 
 // Helper to render templates under ./templates.
@@ -27,16 +54,27 @@ function render_template($tpl_name, $params) {
 
 // Generate lnbits_payment page, using ./templates/lnbits_payment.php
 function lnbits_payment_shortcode() {
-    $order = wc_get_order($_REQUEST['order_id']);
-    $invoice = $order->get_meta("lnbits_invoice");
     $check_payment_url = trailingslashit(get_bloginfo('wpurl')) . '?wc-api=wc_gateway_lnbits';
-    $success_url = $order->get_checkout_order_received_url();
+
+    if (isset($_REQUEST['order_id'])) {
+        $order_id = $_REQUEST['order_id'];
+        $order = wc_get_order($order_id);
+        $invoice = $order->get_meta("lnbits_invoice");
+        $success_url = $order->get_checkout_order_received_url();
+    } else {
+        // Likely when editting page with this shortcode, use dummy order.
+        $order_id = 1;
+        $invoice = "lnbc0000";
+        $success_url = "/dummy-success";
+    }
+
     $template_params = array(
         "invoice" => $invoice,
         "check_payment_url" => $check_payment_url,
-        'order_id' => $order->get_id(),
+        'order_id' => $order_id,
         'success_url' => $success_url
     );
+    
     return render_template('lnbits_payment.php', $template_params);
 }
 
@@ -181,13 +219,15 @@ function lnbits_init() {
                 $order->save();
 
                 // TODO: configurable payment page slug
-                $redirect_url = add_query_arg(array("order_id" => $order->get_id()), get_permalink( get_page_by_path( 'lnbits' ) ));
+                $redirect_url = add_query_arg(array("order_id" => $order->get_id()), get_permalink( get_page_by_path( LNBITS_PAYMENT_PAGE_SLUG ) ));
 
                 return array(
                     "result" => "success",
                     "redirect" => $redirect_url
                 );
             } else {
+                error_log("LNBits API failure. Status=".$r['status']);
+                error_log($r['response']);
                 return array(
                     "result" => "failure",
                     "messages" => array("Failed to create LNBits invoice.")
