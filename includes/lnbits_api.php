@@ -29,8 +29,8 @@ class LNBitsAPI {
             "webhook" => "http://webhook.com"
         );
         $headers = array(
-            'X-Api-Key: '.$this->api_key,
-            'Content-Type: application/json'
+            'X-Api-Key' => $this->api_key,
+            'Content-Type' => 'application/json'
         );
         return $c->post($this->url.'/api/v1/payments', array(), $data, $headers);
     }
@@ -38,8 +38,8 @@ class LNBitsAPI {
     public function checkInvoicePaid($payment_hash) {
         $c = new CurlWrapper();
         $headers = array(
-            'X-Api-Key: '.$this->api_key,
-            'Content-Type: application/json'
+            'X-Api-Key' => $this->api_key,
+            'Content-Type' => 'application/json'
         );
         return $c->get($this->url.'/api/v1/payments/'.$payment_hash, array(), $headers);
     }

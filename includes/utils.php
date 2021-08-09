@@ -23,48 +23,21 @@ class Utils {
 class CurlWrapper {
 
     private function request($method, $url, $params, $headers, $data) {
-        $curl = curl_init();
-
         $url = add_query_arg($params, $url);
-
-        $curl_options = array(
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL            => $url
-        );
-
-        if ($method == 'POST') {
-            // $headers[] = 'Content-Type: application/json';
-            array_merge($curl_options, array(CURLOPT_POST => 1));
-            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-        } elseif ($method == 'GET') {
-            // array_merge($curl_options, array(CURLOPT_GET => 1));
-        }
-
-        // error_log('headers for url='.$url);
-        // // error_log((string)$headers);
-        // error_log('content-type='.$headers['Content-Type']);
-        $user_agent = "WordPress lnbits-for-woocommerce CURL";
-        curl_setopt_array($curl, $curl_options);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_USERAGENT, $user_agent);
-        // curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $curlopt_ssl_verifypeer);
-
-        error_log("curl exec");
-        $raw_resp = curl_exec($curl);
-        error_log($raw_resp);
-        $response    = json_decode($raw_resp, TRUE);
-        $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-
+        $r = wp_remote_request($url, array(
+            'method' => $method,
+            'headers' => $headers,
+            'body' => $data ? json_encode($data) : ''
+        ));
 
         return array(
-            'status' => $http_status,
-            'response' => $response
+            'status' => $r['response']['code'],
+            'response' => json_decode($r['body'], true)
         );
     }
 
-
     public function get($url, $params, $headers) {
-        return $this->request('GET', $url, $params, $headers, array());
+        return $this->request('GET', $url, $params, $headers, null);
     }
 
     public function post($url, $params, $data, $headers) {
