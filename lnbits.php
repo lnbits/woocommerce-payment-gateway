@@ -34,8 +34,7 @@ function woocommerce_lnbits_activate() {
           'post_status' => 'publish',
           'post_author' => wp_get_current_user()->ID,
           'post_type'   => 'page',
-          // TODO: move into a template
-          'post_content' => '<!-- wp:paragraph --><p>Please scan this QR code with your Lightning wallet such as Strike, Wallet of Satoshi, Breez, or any other.</p><!-- /wp:paragraph --><!-- wp:paragraph --><p>After paying in your wallet, you will automatically be redirected.</p><!-- /wp:paragraph --><!-- wp:shortcode -->[lnbits_payment_shortcode]<!-- /wp:shortcode -->'
+          'post_content' => render_template('payment_page.php', array())
         );
 
         // insert the post into the database
@@ -75,7 +74,7 @@ function lnbits_payment_shortcode() {
         'success_url' => $success_url
     );
     
-    return render_template('lnbits_payment.php', $template_params);
+    return render_template('payment_shortcode.php', $template_params);
 }
 
 

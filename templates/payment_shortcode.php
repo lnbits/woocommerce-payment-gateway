@@ -30,3 +30,9 @@
 	});
 	
 </script>
+
+<style>
+	div.qr_invoice {
+	 text-align:center
+	}
+</style>
