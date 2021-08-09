@@ -1,13 +1,6 @@
 <?php
 namespace LNBitsPlugin;
 
-// use OpenNode\OpenNode;
-// use OpenNode\Merchant;
-// use OpenNode\OrderIsNotValid;
-// use OpenNode\OrderNotFound;
-
-
-
 
 class Utils {
     public static function convert_to_satoshis($amount, $currency) {
@@ -77,56 +70,4 @@ class CurlWrapper {
     public function post($url, $params, $data, $headers) {
         return $this->request('POST', $url, $params, $headers, $data);
     }
-
-    // public function test() {
-    //     return "test";
-    // }
-    // private $order;
-
-    // public function __construct($order)
-    // {
-    //     $this->order = $order;
-    // }
-
-    // public function toHash()
-    // {
-    //     return $this->order;
-    // }
-
-    // public function __get($name)
-    // {
-    //     return $this->order[$name];
-    // }
-
-    // public static function find($orderId, $options = array(), $authentication = array())
-    // {
-    //     try {
-    //         return self::findOrFail($orderId, $options, $authentication);
-    //     } catch (OrderNotFound $e) {
-    //         return false;
-    //     }
-    // }
-
-    // public static function findOrFail($orderId, $options = array(), $authentication = array())
-    // {
-    //     $order = OpenNode::request('/checkouts/status/' . $orderId, 'GET', array(), $authentication);
-
-    //     return new self($order);
-    // }
-
-    // public static function create($params, $options = array(), $authentication = array())
-    // {
-    //     try {
-    //         return self::createOrFail($params, $options, $authentication);
-    //     } catch (OrderIsNotValid $e) {
-    //         return false;
-    //     }
-    // }
-
-    // public static function createOrFail($params, $options = array(), $authentication = array())
-    // {
-    //     $order = OpenNode::request('/orders', 'POST', $params, $authentication);
-
-    //     return new self($order);
-    // }
 }
