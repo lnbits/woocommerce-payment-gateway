@@ -103,7 +103,7 @@ function lnbits_init() {
             global $woocommerce;
 
             $this->id = 'lnbits';
-            $this->icon = plugin_dir_url(__FILE__).'assets/bitcoin.png';
+            $this->icon = plugin_dir_url(__FILE__).'assets/lightning.png';
             $this->has_fields = false;
             $this->method_title = 'LNBits';
             $this->method_description = 'Take payments in Bitcoin over Lightning, without extra fees, using LNBits.';
