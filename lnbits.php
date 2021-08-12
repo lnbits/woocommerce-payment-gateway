@@ -183,7 +183,7 @@ function lnbits_init() {
          */
         public function thankyou() {
             if ($description = $this->get_description()) {
-                echo wpautop(wptexturize($description));
+                echo esc_html(wpautop(wptexturize($description)));
             }
         }
 
