@@ -56,7 +56,7 @@ function lnbits_payment_shortcode() {
     $check_payment_url = trailingslashit(get_bloginfo('wpurl')) . '?wc-api=wc_gateway_lnbits';
 
     if (isset($_REQUEST['order_id'])) {
-        $order_id = $_REQUEST['order_id'];
+        $order_id = absint($_REQUEST['order_id']);
         $order = wc_get_order($order_id);
         $invoice = $order->get_meta("lnbits_invoice");
         $success_url = $order->get_checkout_order_received_url();
