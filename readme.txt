@@ -15,6 +15,13 @@ Accept Bitcoin on your WooCommerce store, instantly over Lightning, and without 
 Accept Bitcoin on your WooCommerce store, instantly over Lightning, and without extra fees.
 
 
+== Issues and Development ==
+
+If you find a bug, or have an idea for improvement, please [file an issue](https://gitlab.com/soverign-individuals/lnbits-for-woocommerce/-/issues/new) or send a pull request.
+
+If you need help, you can reach out over Telegram: [https://t.me/p_phaedrus](https://t.me/p_phaedrus).
+
+
 == External services used by this plugin ==
 
 = LNBits =
