@@ -4,19 +4,23 @@ namespace LNBitsPlugin;
 
 class Utils {
     public static function convert_to_satoshis($amount, $currency) {
-        error_log($amount." ".$currency);
-        $c = new CurlWrapper();
-        $resp = $c->get('https://blockchain.info/tobtc', array(
-            'currency' => $currency,
-            'value' => $amount
-        ), array());
+        if(strtolower($currency) !== 'btc') {
+            error_log($amount . " " . $currency);
+            $c    = new CurlWrapper();
+            $resp = $c->get('https://blockchain.info/tobtc', array(
+                'currency' => $currency,
+                'value'    => $amount
+            ), array());
 
-        if ($resp['status'] != 200) {
-            throw new \Exception('Blockchain.info request for currency conversion failed. Got status '.$resp['status']);
+            if ($resp['status'] != 200) {
+                throw new \Exception('Blockchain.info request for currency conversion failed. Got status ' . $resp['status']);
+            }
+
+            return (int) round($resp['response'] * 100000000);
         }
-
-
-        return (int)round($resp['response'] * 100000000);
+        else {
+            return intval($amount * 100000000);
+        }
     }
 }
 
