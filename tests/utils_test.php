@@ -16,4 +16,10 @@ class UtilsTest extends WP_UnitTestCase {
 		$this->assertGreaterThan(800, $sats);
 		$this->assertLessThan(2000, $sats);
 	}
+
+	public function test_currency_conversion_btc() {
+		$sats = Utils::convert_to_satoshis(1.2, 'BTC');
+		$this->assertIsInt($sats);
+		$this->assertEquals(120000000, $sats);
+	}
 }
