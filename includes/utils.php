@@ -34,6 +34,14 @@ class CurlWrapper {
             'body' => $data ? json_encode($data) : ''
         ));
 
+        if (is_wp_error($r)) {
+            error_log('WP_Error: '.$r->get_error_message());
+            return array(
+                'status' => 500,
+                'response' => $r->get_error_message()
+            );
+        }
+
         return array(
             'status' => $r['response']['code'],
             'response' => json_decode($r['body'], true)
