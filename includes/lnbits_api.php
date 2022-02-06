@@ -12,8 +12,8 @@ namespace LNBitsPlugin;
  */
 class LNBitsAPI {
 
-    protected string $url;
-    protected string $api_key;
+    protected $url;
+    protected $api_key;
 
     public function __construct($url, $api_key) {
         $this->url = $url;
