@@ -38,4 +38,4 @@ If you find a bug, or have an idea for improvement, please [file an issue](https
 
 ## Donation
 
-If you find this plugin useful and would like to donate few sats to support the development, [send some using LNBits](https://lnbits.com/paywall/YHNaeBc4nG2U4u6zyoHmjv)!
+If you find this plugin useful and would like to donate few sats to support the development, [send some using LNBits](https://legend.lnbits.com/paywall/YHNaeBc4nG2U4u6zyoHmjv)!
