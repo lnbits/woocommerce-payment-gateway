@@ -34,6 +34,8 @@ The customer picks "Pay with Bitcoin over Lightning" from the list of payment op
 
 If you find a bug, or have an idea for improvement, please [file an issue](https://gitlab.com/soverign-individuals/lnbits-for-woocommerce/-/issues/new) or send a pull request.
 
+If you have any other question, join our Telegram group: [https://t.me/+h9utj7CKAiQ5NTI8](https://t.me/+h9utj7CKAiQ5NTI8).
+
 
 
 ## Donation
