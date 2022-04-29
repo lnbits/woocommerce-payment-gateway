@@ -172,7 +172,7 @@ function lnbits_init() {
                   'title' => __('LNBits URL', 'woocommerce'),
                   'description' => __('URL where LNBits server is running.', 'woocommerce'),
                   'type' => 'text',
-                  'default' => 'https://lnbits.com',
+                  'default' => 'https://legend.lnbits.com',
               ),
             );
         }
