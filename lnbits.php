@@ -178,9 +178,9 @@ function lnbits_init() {
                     'default' => __('Powered by LNbits. You can use any Lightning wallet to pay.'),
                 ),
                 'lnbits_api_key' => array(
-                    'title' => __('LNbits API Key', 'woocommerce'),
+                    'title' => __('LNbits API Invoice/Read Key', 'woocommerce'),
                     'type' => 'text',
-                    'description' => __('Your personal API Key. Generate one <a href="https://lnbits.com" target="_blank">here</a>.  ', 'woocommerce'),
+                    'description' => __('Available from your LNbits\' wallet\'s API info sidebar.', 'woocommerce'),
                     'default' => '',
                 ),
                 'lnbits_url' => array(
