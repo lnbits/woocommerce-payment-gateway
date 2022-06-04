@@ -1,5 +1,5 @@
 <?php
-namespace LNBitsPlugin;
+namespace LNbitsPlugin;
 
 // use OpenNode\OpenNode;
 // use OpenNode\Merchant;
@@ -8,9 +8,9 @@ namespace LNBitsPlugin;
 
 
 /**
- * For calling LNBits API
+ * For calling LNbits API
  */
-class LNBitsAPI {
+class LNbitsAPI {
 
     protected $url;
     protected $api_key;

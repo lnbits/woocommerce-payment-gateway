@@ -1,4 +1,4 @@
-=== Bitcoin/Lightning Payment Gateway - LNBits ===
+=== Bitcoin/Lightning Payment Gateway - LNbits ===
 Contributors: philosopher_phaedrus
 Requires at least: 5.1
 Tested up to: 5.8
@@ -24,8 +24,8 @@ If you need help, you can join our support group on Telegram: [https://t.me/+h9u
 
 == External services used by this plugin ==
 
-= LNBits =
-This plugin uses LNBits instance (lnbits.com by default, or your own) for creating the invoice.
+= LNbits =
+This plugin uses LNbits instance (lnbits.com by default, or your own) for creating the invoice.
 https://lnbits.org/
 
 = Blockchain.info =
@@ -39,4 +39,4 @@ https://developers.google.com/chart
 
 == Donation ==
 
-If you find this plugin useful and would like to donate few sats to support the development, [send some using LNBits](https://legend.lnbits.com/paywall/YHNaeBc4nG2U4u6zyoHmjv)!
+If you find this plugin useful and would like to donate few sats to support the development, [send some using LNbits](https://legend.lnbits.com/paywall/YHNaeBc4nG2U4u6zyoHmjv)!

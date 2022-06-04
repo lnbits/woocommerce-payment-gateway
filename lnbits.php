@@ -1,7 +1,7 @@
 <?php
 
 /*
-Plugin Name: Bitcoin/Lightning Payment Gateway - LNBits
+Plugin Name: Bitcoin/Lightning Payment Gateway - LNbits
 Plugin URI: https://gitlab.com/sovereign-individuals/lnbits-for-woocommerce
 Description: Accept Bitcoin over Lightning instantly and without fees
 Version: 0.0.3
@@ -17,8 +17,8 @@ define('LNBITS_PAYMENT_PAGE_SLUG', 'lnbits_payment');
 
 require_once(__DIR__ . '/includes/init.php');
 
-use LNBitsPlugin\Utils;
-use LNBitsPlugin\LNBitsAPI;
+use LNbitsPlugin\Utils;
+use LNbitsPlugin\LNbitsAPI;
 
 
 
@@ -106,7 +106,7 @@ function lnbits_init() {
 
     // Register the gateway, essentially a controller that handles all requests.
     function add_lnbits_gateway($methods) {
-        $methods[] = 'WC_Gateway_LNBits';
+        $methods[] = 'WC_Gateway_LNbits';
         return $methods;
     }
 
@@ -114,15 +114,15 @@ function lnbits_init() {
 
 
     // Defined here, because it needs to be defined after WC_Payment_Gateway is already loaded.
-    class WC_Gateway_LNBits extends WC_Payment_Gateway {
+    class WC_Gateway_LNbits extends WC_Payment_Gateway {
         public function __construct() {
             global $woocommerce;
 
             $this->id = 'lnbits';
             $this->icon = plugin_dir_url(__FILE__).'assets/lightning.png';
             $this->has_fields = false;
-            $this->method_title = 'LNBits';
-            $this->method_description = 'Take payments in Bitcoin over Lightning, without extra fees, using LNBits.';
+            $this->method_title = 'LNbits';
+            $this->method_description = 'Take payments in Bitcoin over Lightning, without extra fees, using LNbits.';
 
             $this->init_form_fields();
             $this->init_settings();
@@ -132,7 +132,7 @@ function lnbits_init() {
 
             $url = $this->get_option('lnbits_url');
             $api_key = $this->get_option('lnbits_api_key');
-            $this->api = new LNBitsAPI($url, $api_key);
+            $this->api = new LNbitsAPI($url, $api_key);
 
             add_action('woocommerce_update_options_payment_gateways_'.$this->id, array($this, 'process_admin_options'));
             add_action('woocommerce_api_wc_gateway_'.$this->id, array($this, 'check_payment'));
@@ -143,8 +143,8 @@ function lnbits_init() {
          */
         public function admin_options() {
             ?>
-            <h3><?php _e('LNBits', 'woothemes'); ?></h3>
-            <p><?php _e('Accept Bitcoin instantly through LNBits/Lightning.', 'woothemes'); ?></p>
+            <h3><?php _e('LNbits', 'woothemes'); ?></h3>
+            <p><?php _e('Accept Bitcoin instantly through LNbits/Lightning.', 'woothemes'); ?></p>
             <table class="form-table">
                 <?php $this->generate_settings_html(); ?>
             </table>
@@ -159,8 +159,8 @@ function lnbits_init() {
             // echo("init_form_fields");
             $this->form_fields = array(
                 'enabled' => array(
-                    'title' => __('Enable LNBits payment', 'woocommerce'),
-                    'label' => __('Enable Bitcoin payments via LNBits', 'woocommerce'),
+                    'title' => __('Enable LNbits payment', 'woocommerce'),
+                    'label' => __('Enable Bitcoin payments via LNbits', 'woocommerce'),
                     'type' => 'checkbox',
                     'description' => '',
                     'default' => 'no',
@@ -169,23 +169,23 @@ function lnbits_init() {
                     'title' => __('Title', 'woocommerce'),
                     'type' => 'text',
                     'description' => __('The payment method title which a customer sees at the checkout of your store.', 'woocommerce'),
-                    'default' => __('Pay with Bitcoin over Lightning via LNBits', 'woocommerce'),
+                    'default' => __('Pay with Bitcoin over Lightning via LNbits', 'woocommerce'),
                 ),
                 'description' => array(
                     'title' => __('Description', 'woocommerce'),
                     'type' => 'textarea',
                     'description' => __('The payment method description which a customer sees at the checkout of your store.', 'woocommerce'),
-                    'default' => __('Powered by LNBits. You can use any Lightning wallet to pay.'),
+                    'default' => __('Powered by LNbits. You can use any Lightning wallet to pay.'),
                 ),
                 'lnbits_api_key' => array(
-                    'title' => __('LNBits API Key', 'woocommerce'),
+                    'title' => __('LNbits API Key', 'woocommerce'),
                     'type' => 'text',
                     'description' => __('Your personal API Key. Generate one <a href="https://lnbits.com" target="_blank">here</a>.  ', 'woocommerce'),
                     'default' => '',
                 ),
                 'lnbits_url' => array(
-                  'title' => __('LNBits URL', 'woocommerce'),
-                  'description' => __('URL where LNBits server is running.', 'woocommerce'),
+                  'title' => __('LNbits URL', 'woocommerce'),
+                  'description' => __('URL where LNbits server is running.', 'woocommerce'),
                   'type' => 'text',
                   'default' => 'https://legend.lnbits.com',
               ),
@@ -206,17 +206,17 @@ function lnbits_init() {
         /**
          * Called from checkout page, when "Place order" hit, through AJAX.
          *
-         * Call LNBits API to create an invoice, and store the invoice in the order metadata.
+         * Call LNbits API to create an invoice, and store the invoice in the order metadata.
          */
         public function process_payment($order_id) {
             $order = wc_get_order($order_id);
 
-            // This will be stored in the Lightning invoice (ie. can be used to match orders in LNBits)
+            // This will be stored in the Lightning invoice (ie. can be used to match orders in LNbits)
             $memo = "WordPress Order=".$order->get_id()." Total=".$order->get_total().get_woocommerce_currency();
 
             $amount = Utils::convert_to_satoshis($order->get_total(), get_woocommerce_currency());
 
-            // Call LNBits server to create invoice
+            // Call LNbits server to create invoice
             // Expected 201
             // {
             //  "checking_id": "e0dfcde5ff9708d71e5947c86b9d46cc230fd0f16e0a5f03b00ac97f0b23e684",
@@ -240,11 +240,11 @@ function lnbits_init() {
                     "redirect" => $redirect_url
                 );
             } else {
-                error_log("LNBits API failure. Status=".$r['status']);
+                error_log("LNbits API failure. Status=".$r['status']);
                 error_log($r['response']);
                 return array(
                     "result" => "failure",
-                    "messages" => array("Failed to create LNBits invoice.")
+                    "messages" => array("Failed to create LNbits invoice.")
                 );
             }
         }
@@ -253,7 +253,7 @@ function lnbits_init() {
         /**
          * Called by lnbits_payment page (with QR code), through ajax.
          *
-         * Checks whether given invoice was paid, using LNBits API,
+         * Checks whether given invoice was paid, using LNbits API,
          * and updates order metadata in the database.
          */
         public function check_payment() {
@@ -263,7 +263,7 @@ function lnbits_init() {
 
             if ($r['status'] == 200) {
                 if ($r['response']['paid'] == true) {
-                    $order->add_order_note('Payment is settled and has been credited to your LNBits account. Purchased goods/services can be securely delivered to the customer.');
+                    $order->add_order_note('Payment is settled and has been credited to your LNbits account. Purchased goods/services can be securely delivered to the customer.');
                     $order->payment_complete();
                     $order->save();
                     error_log("PAID");
@@ -282,7 +282,7 @@ function lnbits_init() {
                 echo(json_encode(array(
                     'result' => 'failure',
                     'paid' => false,
-                    'messages' => array('Request to LNBits failed.')
+                    'messages' => array('Request to LNbits failed.')
                 )));
 
             }

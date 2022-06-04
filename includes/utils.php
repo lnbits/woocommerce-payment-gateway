@@ -1,5 +1,5 @@
 <?php
-namespace LNBitsPlugin;
+namespace LNbitsPlugin;
 
 
 class Utils {

@@ -2,8 +2,8 @@
 
 require_once(dirname(__DIR__) . '/includes/init.php');
 
-use LNBitsPlugin\CurlWrapper;
-use LNBitsPlugin\Utils;
+use LNbitsPlugin\CurlWrapper;
+use LNbitsPlugin\Utils;
 
 
 
