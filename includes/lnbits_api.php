@@ -16,7 +16,8 @@ class LNbitsAPI {
     protected $api_key;
 
     public function __construct($url, $api_key) {
-        $this->url = $url;
+        $this->url = rtrim($url,"/");
+        // Remove the tailing slash if there is one
         $this->api_key = $api_key;
     }
 
