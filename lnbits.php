@@ -135,7 +135,6 @@ function lnbits_init() {
             $this->api = new LNBitsAPI($url, $api_key);
 
             add_action('woocommerce_update_options_payment_gateways_'.$this->id, array($this, 'process_admin_options'));
-            add_action('woocommerce_thankyou_'.$this->id, array($this, 'thankyou'));
             add_action('woocommerce_api_wc_gateway_'.$this->id, array($this, 'check_payment'));
         }
 
