@@ -73,7 +73,7 @@ function lnbits_payment_shortcode() {
         'order_id' => $order_id,
         'success_url' => $success_url
     );
-    
+
     return render_template('payment_shortcode.php', $template_params);
 }
 
@@ -87,6 +87,22 @@ function lnbits_init() {
 
     // Register shortcode for rendering Lightning invoice (QR code)
     add_shortcode('lnbits_payment_shortcode', 'lnbits_payment_shortcode');
+
+    // Set the cURL timeout to 15 seconds. When requesting a lightning invoice
+    // over Tor, a short timeout can result in failures.
+    add_filter('http_request_args', 'lnbits_http_request_args', 100, 1);
+    function lnbits_http_request_args($r) //called on line 237
+    {
+        $r['timeout'] = 15;
+        return $r;
+    }
+
+    add_action('http_api_curl', 'lnbits_http_api_curl', 100, 1);
+    function lnbits_http_api_curl($handle) //called on line 1315
+    {
+        curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, 15 );
+        curl_setopt( $handle, CURLOPT_TIMEOUT, 15 );
+    }
 
     // Register the gateway, essentially a controller that handles all requests.
     function add_lnbits_gateway($methods) {
@@ -190,7 +206,7 @@ function lnbits_init() {
 
         /**
          * Called from checkout page, when "Place order" hit, through AJAX.
-         * 
+         *
          * Call LNBits API to create an invoice, and store the invoice in the order metadata.
          */
         public function process_payment($order_id) {
@@ -200,13 +216,13 @@ function lnbits_init() {
             $memo = "WordPress Order=".$order->get_id()." Total=".$order->get_total().get_woocommerce_currency();
 
             $amount = Utils::convert_to_satoshis($order->get_total(), get_woocommerce_currency());
-            
+
             // Call LNBits server to create invoice
             // Expected 201
             // {
-            //  "checking_id": "e0dfcde5ff9708d71e5947c86b9d46cc230fd0f16e0a5f03b00ac97f0b23e684", 
-            //  "lnurl_response": null, 
-            //  "payment_hash": "e0dfcde5ff9708d71e5947c86b9d46cc230fd0f16e0a5f03b00ac97f0b23e684", 
+            //  "checking_id": "e0dfcde5ff9708d71e5947c86b9d46cc230fd0f16e0a5f03b00ac97f0b23e684",
+            //  "lnurl_response": null,
+            //  "payment_hash": "e0dfcde5ff9708d71e5947c86b9d46cc230fd0f16e0a5f03b00ac97f0b23e684",
             //  "payment_request": "..."
             // }
             $r = $this->api->createInvoice($amount, $memo);
@@ -237,7 +253,7 @@ function lnbits_init() {
 
         /**
          * Called by lnbits_payment page (with QR code), through ajax.
-         * 
+         *
          * Checks whether given invoice was paid, using LNBits API,
          * and updates order metadata in the database.
          */
