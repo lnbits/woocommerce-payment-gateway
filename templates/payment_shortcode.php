@@ -1,5 +1,7 @@
 <div class="qr_invoice" id="qr_invoice">
-	<img src="<?php echo esc_url("https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=".$invoice."&choe=UTF-8") ?>"/><br/>
+    <a href="lightning:<?php echo $invoice ?>" title="Pay with a Bitcoin Lightning wallet">
+	    <img src="<?php echo esc_url("https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=".$invoice."&choe=UTF-8") ?>"/><br/>
+    </a>
 	<textarea id="invoice_text"><?php echo esc_textarea($invoice) ?></textarea>
 </div>
 
@@ -28,7 +30,7 @@
 		$('#invoice_text').select();
 		document.execCommand('copy');
 	});
-	
+
 </script>
 
 <style>
