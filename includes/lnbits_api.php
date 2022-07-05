@@ -18,14 +18,14 @@ class API {
         $this->watch_only_wallet_id = $watch_only_wallet_id;
     }
 
-    public function createInvoice($amount, $memo, $order_id) {
+    public function createCharge($amount, $memo, $order_id) {
         $c = new CurlWrapper();
         $order = wc_get_order($order_id);
         $data = array(
             "onchainwallet" => $this->watch_only_wallet_id,
             "lnbitswallet" => $this->wallet_id,
             "description" => $memo,
-            "webhook" => "https://hookb.in/r1j0z3rX7ytqdJ3qVqVR",
+            "webhook" => "",
             "completelink" => $order->get_checkout_order_received_url(),
             "completelinktext" => "Payment Received. Back",
             "time"=> 1440,

@@ -16,41 +16,6 @@ require_once(__DIR__ . '/includes/init.php');
 use LNbitsSatsPayPlugin\Utils;
 use LNbitsSatsPayPlugin\API;
 
-// Helper to render templates under ./templates.
-function render_template($tpl_name, $params)
-{
-    return wc_get_template_html($tpl_name, $params, '', plugin_dir_path(__FILE__) . 'templates/');
-}
-
-
-// Generate lnbits_payment page, using ./templates/lnbits_payment.php
-function lnbits_satspay_server_payment_shortcode()
-{
-    $check_payment_url = trailingslashit(get_bloginfo('wpurl')) . '?wc-api=wc_gateway_lnbits';
-
-    if (isset($_REQUEST['order_id'])) {
-        $order_id    = absint($_REQUEST['order_id']);
-        $order       = wc_get_order($order_id);
-        $invoice     = $order->get_meta("lnbits_satspay_server_invoice");
-        $success_url = $order->get_checkout_order_received_url();
-    } else {
-        // Likely when editting page with this shortcode, use dummy order.
-        $order_id    = 1;
-        $invoice     = "lnbc0000";
-        $success_url = "/dummy-success";
-    }
-
-    $template_params = array(
-        "invoice"           => $invoice,
-        "check_payment_url" => $check_payment_url,
-        'order_id'          => $order_id,
-        'success_url'       => $success_url
-    );
-
-    return render_template('payment_shortcode.php', $template_params);
-}
-
-
 // This is the entry point of the plugin, where everything is registered/hooked up into WordPress.
 function lnbits_satspay_server_init()
 {
@@ -58,16 +23,12 @@ function lnbits_satspay_server_init()
         return;
     };
 
-    // Register shortcode for rendering Lightning invoice (QR code)
-    add_shortcode('lnbits_satspay_server_payment_shortcode', 'lnbits_satspay_server_payment_shortcode');
-
     // Set the cURL timeout to 15 seconds. When requesting a lightning invoice
-    // over Tor, a short timeout can result in failures.
+    // If using a lnbits instance that is funded by a lnbits instance on Tor, a short timeout can result in failures.
     add_filter('http_request_args', 'lnbits_satspay_server_http_request_args', 100, 1);
     function lnbits_satspay_server_http_request_args($r) //called on line 237
     {
         $r['timeout'] = 15;
-
         return $r;
     }
 
@@ -82,7 +43,6 @@ function lnbits_satspay_server_init()
     function add_lnbits_satspay_server_gateway($methods)
     {
         $methods[] = 'WC_Gateway_LNbits_Satspay_Server';
-
         return $methods;
     }
 
@@ -245,19 +205,7 @@ function lnbits_satspay_server_init()
             $amount = Utils::convert_to_satoshis($order->get_total(), get_woocommerce_currency());
 
             // Call LNbits server to create invoice
-            // Expected 201
-            //{
-            //    "onchainwallet": "hzhhRFk7aQcL5DjQeghH2R",
-            //    "lnbitswallet": "15c5e09fc96843cdacffbc3247b7b2be",
-            //    "description": "TEST invoice",
-            //    "webhook": "https://google.com",
-            //    "completelink": "https://anchorhodl.com",
-            //    "completelinktext": "Yey done",
-            //    "time": 1440,
-            //    "amount": 1000
-            //}
-
-            $r = $this->api->createInvoice($amount, $memo, $order_id);
+            $r = $this->api->createCharge($amount, $memo, $order_id);
 
             if ($r['status'] === 200) {
                 $resp = $r['response'];
@@ -289,8 +237,6 @@ function lnbits_satspay_server_init()
 
 
         /**
-         * Called by lnbits_payment page (with QR code), through ajax.
-         *
          * Checks whether given invoice was paid, using LNbits API,
          * and updates order metadata in the database.
          */
