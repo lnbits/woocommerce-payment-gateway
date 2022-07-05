@@ -163,14 +163,14 @@ function lnbits_satspay_server_init()
                     'type'        => 'text',
                     'default'     => 'https://legend.lnbits.com',
                 ),
-                'lnbits_satspay_server_api_key'       => array(
-                    'title'       => __('LNbits Invoice/Read Key', 'woocommerce'),
+                'lnbits_satspay_wallet_id'            => array(
+                    'title'       => __('LNbits Wallet ID', 'woocommerce'),
                     'type'        => 'text',
                     'description' => __('Available from your LNbits\' wallet\'s API info sidebar.', 'woocommerce'),
                     'default'     => '',
                 ),
-                'lnbits_satspay_wallet_id'            => array(
-                    'title'       => __('LNbits Wallet ID', 'woocommerce'),
+                'lnbits_satspay_server_api_key'       => array(
+                    'title'       => __('LNbits Invoice/Read Key', 'woocommerce'),
                     'type'        => 'text',
                     'description' => __('Available from your LNbits\' wallet\'s API info sidebar.', 'woocommerce'),
                     'default'     => '',
@@ -178,7 +178,7 @@ function lnbits_satspay_server_init()
                 'lnbits_satspay_watch_only_wallet_id' => array(
                     'title'       => __('Watch Only Extension Wallet ID', 'woocommerce'),
                     'type'        => 'text',
-                    'description' => __('Available from your LNbits\' Watch Only Extension.', 'woocommerce'),
+                    'description' => __('Available from your LNbits\' "Watch Only" extension.', 'woocommerce'),
                     'default'     => '',
                 ),
             );
