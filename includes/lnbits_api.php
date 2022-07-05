@@ -25,7 +25,7 @@ class API {
             "onchainwallet" => $this->watch_only_wallet_id,
             "lnbitswallet" => $this->wallet_id,
             "description" => $memo,
-            "webhook" => "",
+            "webhook" => sprintf("%s/wp-json/lnbits_satspay_server/v1/payment_complete/%s", get_site_url(), $order_id),
             "completelink" => $order->get_checkout_order_received_url(),
             "completelinktext" => "Payment Received. Back",
             "time"=> 1440,

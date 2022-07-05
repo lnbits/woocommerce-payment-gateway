@@ -73,7 +73,7 @@ function lnbits_satspay_server_init()
 
     add_action("rest_api_init", function () {
         register_rest_route("lnbits_satspay_server/v1", "/payment_complete/(?P<id>\d+)", array(
-            "methods"  => "POST",
+            "methods"  => "GET",
             "callback" => "lnbits_satspay_server_add_payment_complete_callback",
         ));
     });
@@ -107,7 +107,6 @@ function lnbits_satspay_server_init()
                 $this,
                 'process_admin_options'
             ));
-            add_action('woocommerce_api_wc_gateway_' . $this->id, array($this, 'check_payment'));
         }
 
         /**
@@ -242,7 +241,8 @@ function lnbits_satspay_server_init()
          */
         public function check_payment()
         {
-            $order        = wc_get_order($_REQUEST['order_id']);
+            $order_id = wc_get_order_id_by_order_key($_REQUEST['key']);
+            $order        = wc_get_order($order_id);
             $lnbits_payment_id = $order->get_meta('lnbits_satspay_server_payment_id');
             $r            = $this->api->checkChargePaid($lnbits_payment_id);
 
@@ -252,26 +252,13 @@ function lnbits_satspay_server_init()
                     $order->payment_complete();
                     $order->save();
                     error_log("PAID");
-                    echo(json_encode(array(
-                        'result'   => 'success',
-                        'redirect' => $order->get_checkout_order_received_url(),
-                        'paid'     => true
-                    )));
-                } else {
-                    echo(json_encode(array(
-                        'result' => 'success',
-                        'paid'   => false
-                    )));
                 }
             } else {
-                echo(json_encode(array(
-                    'result'   => 'failure',
-                    'paid'     => false,
-                    'messages' => array('Request to LNbits failed.')
-                )));
-
+                // TODO: handle non 200 response status
             }
             die();
         }
+
     }
+
 }
