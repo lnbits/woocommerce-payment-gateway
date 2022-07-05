@@ -28,7 +28,7 @@ class API {
             "webhook" => "",
             "completelink" => $order->get_checkout_order_received_url(),
             "completelinktext" => "Payment Received. Back",
-            "time"=> 1440,
+            "time"=> 60,
             "amount"=> $amount
         );
         $headers = array(
