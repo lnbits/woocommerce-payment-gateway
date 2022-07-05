@@ -9,45 +9,12 @@ Author: BlackCoffee
 Author URI: https://github.com/blackcoffeexbt
 */
 
-
 add_action('plugins_loaded', 'lnbits_satspay_server_init');
-
-define('LNBITS_SATSPAY_SERVER_PAYMENT_PAGE_SLUG', 'lnbits_satspay_server_payment');
-// This is the callback URL that satspay server sends data to when payment is complete
-define('LNBITS_SATSPAY_SERVER_CALLBACK_PAGE_SLUG', 'lnbits_satspay_server_callback_page');
-
 
 require_once(__DIR__ . '/includes/init.php');
 
 use LNbitsSatsPayPlugin\Utils;
 use LNbitsSatsPayPlugin\API;
-
-
-function woocommerce_lnbits_satspayserver_activate()
-{
-    if ( ! current_user_can('activate_plugins')) {
-        return;
-    }
-
-    global $wpdb;
-
-    if (null === $wpdb->get_row("SELECT post_name FROM {$wpdb->prefix}posts WHERE post_name = '" . LNBITS_SATSPAY_SERVER_PAYMENT_PAGE_SLUG . "'", 'ARRAY_A')) {
-        $page = array(
-            'post_title'   => __('Lightning Payment'),
-            'post_name'    => LNBITS_SATSPAY_SERVER_PAYMENT_PAGE_SLUG,
-            'post_status'  => 'publish',
-            'post_author'  => wp_get_current_user()->ID,
-            'post_type'    => 'page',
-            'post_content' => render_template('payment_page.php', array())
-        );
-
-        // insert the post into the database
-        wp_insert_post($page);
-    }
-}
-
-register_activation_hook(__FILE__, 'woocommerce_lnbits_satspayserver_activate');
-
 
 // Helper to render templates under ./templates.
 function render_template($tpl_name, $params)
@@ -299,7 +266,6 @@ function lnbits_satspay_server_init()
                 $order->add_meta_data('lnbits_satspay_server_payment_hash', $resp['payment_hash'], true);
                 $order->save();
 
-//                $redirect_url = add_query_arg(array("order_id" => $order->get_id()), get_permalink( get_page_by_path( LNBITS_SATSPAY_SERVER_PAYMENT_PAGE_SLUG ) ));
                 $url          = sprintf("%s/satspay/%s",
                     rtrim($this->get_option('lnbits_satspay_server_url'), '/'),
                         $resp['id']

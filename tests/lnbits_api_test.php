@@ -2,8 +2,7 @@
 
 require_once(dirname(__DIR__) . '/includes/init.php');
 
-use LNbitsPlugin\LNbitsAPI;
-
+use LNbitsSatsPayPlugin\API;
 
 // add_action( 'http_api_debug', 'http_call_debug', 10, 5 );
 
@@ -16,9 +15,11 @@ function http_call_debug( $response, $type, $class, $args, $url ) {
 
 
 function create_api() {
-	$url = 'https://lnbits.com';
-	$api_key = '15a468cc934f4c95978d66a24ac78333';
-	return new LNbitsAPI($url, $api_key);
+	$url = 'https://legend.lnbits.com';
+	$api_key = '45a26f02b4374f4ea1f0e7312ac51ffb';
+	$wallet_id = '60454c8899974f4f928609cd28f7c33e';
+	$watch_only_wallet_id = 'igRdhScnfoognuaRu9YTei';
+	return new API($url, $api_key, $wallet_id, $watch_only_wallet_id);
 }
 
 
@@ -27,13 +28,14 @@ class LNbitsAPITest extends WP_UnitTestCase {
 
 	public function test_create_invoice_and_check() {
 		$api = create_api();
-		$r = $api->createInvoice(10, "Testing invoice");
-		$this->assertEquals(201, $r['status']);
+		$r = $api->createInvoice(10, "Testing invoice", 1000);
+		$this->assertEquals(200, $r['status']);
 		$this->assertArrayHasKey('payment_hash', $r['response']);
 		$this->assertArrayHasKey('payment_request', $r['response']);
+		$this->assertArrayHasKey('id', $r['response']);
 
-		$hash = $r['response']['payment_hash'];
-		$r = $api->checkInvoicePaid($hash);
+		$payment_id = $r['response']['payment_id'];
+		$r = $api->checkChargePaid($payment_id);
 		$this->assertEquals(200, $r['status']);
 		$this->assertEquals(false, $r['response']['paid']);
 	}
