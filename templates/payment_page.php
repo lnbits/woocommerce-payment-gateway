@@ -8,4 +8,4 @@
 <p class="has-text-align-center">After paying in your wallet, you will automatically be redirected.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:shortcode -->[lnbits_payment_shortcode]<!-- /wp:shortcode -->
+<!-- wp:shortcode -->[lnbits_satspay_server_payment_shortcode]<!-- /wp:shortcode -->

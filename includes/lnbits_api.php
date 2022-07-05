@@ -1,5 +1,5 @@
 <?php
-namespace LNbitsPlugin;
+namespace LNbitsSatsPayPlugin;
 
 // use OpenNode\OpenNode;
 // use OpenNode\Merchant;
@@ -10,7 +10,7 @@ namespace LNbitsPlugin;
 /**
  * For calling LNbits API
  */
-class LNbitsAPI {
+class API {
 
     protected $url;
     protected $api_key;

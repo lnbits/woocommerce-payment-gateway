@@ -1,5 +1,5 @@
 <?php
-namespace LNbitsPlugin;
+namespace LNbitsSatsPayPlugin;
 
 
 class Utils {
