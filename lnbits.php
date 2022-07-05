@@ -107,6 +107,13 @@ function lnbits_satspay_server_init()
                 $this,
                 'process_admin_options'
             ));
+            add_action('woocommerce_api_wc_gateway_' . $this->id, array($this, 'check_payment'));
+
+            // This action allows us to set the order to complete even if in a local dev environment
+            add_action('woocommerce_thankyou', array(
+                $this,
+                'check_payment'
+            ));
         }
 
         /**
