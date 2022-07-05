@@ -5,6 +5,8 @@
 This WooCommerce extensions lets you accept onchain and lightning Bitcoin payments
 using the LNbits Satspay Server extension.
 
+Follow the instructions 
+
 You will need access to an LNbits instance to use this plugin. You can use the _demo_ LNbits
 instance at https://legend.lnbits.com/ to test this plugin.
 
