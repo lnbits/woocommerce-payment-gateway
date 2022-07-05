@@ -5,8 +5,8 @@ Plugin Name: LNbits - Bitcoin Onchain and Lightning Payment Gateway
 Plugin URI: https://github.com/lnbits/woocommerce-lnbits-payment-gateway
 Description: Accept Bitcoin on-chain and on lightning with your own LNbits server
 Version: 0.0.1
-Author: BlackCoffee
-Author URI: https://github.com/blackcoffeexbt
+Author: LNbits
+Author URI: https://github.com/lnbits
 */
 
 add_action('plugins_loaded', 'lnbits_satspay_server_init');
