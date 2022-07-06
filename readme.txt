@@ -1,42 +1,35 @@
-=== Bitcoin/Lightning Payment Gateway - LNbits ===
-Contributors: philosopher_phaedrus
+=== # LNbits - Bitcoin Onchain and Lightning Payment Gateway ===
+Contributors: BlackCoffee, philosopher_phaedrus
 Requires at least: 5.1
 Tested up to: 5.8
 Requires PHP: 7.0
 Stable tag: 0.0.4
 License: MIT
-License URI: https://gitlab.com/sovereign-individuals/lnbits-for-woocommerce/-/raw/main/LICENSE
+License URI: https://github.com/lnbits/woocommerce-payment-gateway/blob/main/LICENSE
 Tags: bitcoin, lightning, lnbits, lightning network, accept bitcoin, accept lightning, instant bitcoin, bitcoin processor, bitcoin gateway, payment gateway, payment module, bitcoin module, bitcoin woocommerce, btc
 
 Accept Bitcoin on your WooCommerce store, instantly over Lightning, and without extra fees.
 
 == Description ==
 
-Accept Bitcoin on your WooCommerce store, instantly over Lightning, and without extra fees.
-
+Accept Bitcoin onchain and with Lightning on your WooCommerce store without any fees.
 
 == Issues and Development ==
 
-If you find a bug, or have an idea for improvement, please [file an issue](https://gitlab.com/soverign-individuals/lnbits-for-woocommerce/-/issues/new) or send a pull request.
-
-If you need help, you can join our support group on Telegram: [https://t.me/+h9utj7CKAiQ5NTI8](https://t.me/+h9utj7CKAiQ5NTI8).
-
+If you find a bug, or have an idea for improvement, please [file an issue](https://github.com/lnbits/woocommerce-payment-gateway) or send a pull request.
 
 == External services used by this plugin ==
 
 = LNbits =
-This plugin uses LNbits instance (lnbits.com by default, or your own) for creating the invoice.
-https://lnbits.org/
+This plugin needs an LNbits instance. https://lnbits.com/
+
+You can test with legend.lnbits.com, and use your own for real-life use.
 
 = Blockchain.info =
 This plugin uses Blockchain.info for converting fiat currencies into Bitcoin, according to the current rates.
 https://www.blockchain.com/api
 
-= Google Charts =
-This plugin uses Google Charts API for generating the QR code.
-https://developers.google.com/chart
+== Acknowledgements ==
+This plugin is a fork of Phaedrus' original [LNBits For WooCommerce](https://gitlab.com/sovereign-individuals/lnbits-for-woocommerce)
 
-
-== Donation ==
-
-If you find this plugin useful and would like to donate few sats to support the development, [send some using LNbits](https://legend.lnbits.com/paywall/YHNaeBc4nG2U4u6zyoHmjv)!
+Thank you to Phaedrus for the work on the original plugin on which this plugin leans heavily.
