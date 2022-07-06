@@ -181,6 +181,12 @@ function lnbits_satspay_server_init()
                     'description' => __('Available from your LNbits\' "Watch Only" extension.', 'woocommerce'),
                     'default'     => '',
                 ),
+                'lnbits_satspay_expiry_time' => array(
+                    'title'       => __('Invoice expiry time in minutes', 'woocommerce'),
+                    'type'        => 'number',
+                    'description' => __('Set an invoice expiry time in minutes.', 'woocommerce'),
+                    'default'     => '1440',
+                ),
             );
         }
 
@@ -206,12 +212,13 @@ function lnbits_satspay_server_init()
             $order = wc_get_order($order_id);
 
             // This will be stored in the invoice (ie. can be used to match orders in LNbits)
-            $memo = "WordPress Order=" . $order->get_id() . " Total=" . $order->get_total() . get_woocommerce_currency();
+            $memo = " Order=" . $order->get_id() . " Total=" . $order->get_total() . get_woocommerce_currency();
 
             $amount = Utils::convert_to_satoshis($order->get_total(), get_woocommerce_currency());
 
+            $invoice_expiry_time = $this->get_option('lnbits_satspay_expiry_time');
             // Call LNbits server to create invoice
-            $r = $this->api->createCharge($amount, $memo, $order_id);
+            $r = $this->api->createCharge($amount, $memo, $order_id, $invoice_expiry_time);
 
             if ($r['status'] === 200) {
                 $resp = $r['response'];

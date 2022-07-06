@@ -18,7 +18,7 @@ class API {
         $this->watch_only_wallet_id = $watch_only_wallet_id;
     }
 
-    public function createCharge($amount, $memo, $order_id) {
+    public function createCharge($amount, $memo, $order_id, $invoice_expiry_time = 1440) {
         $c = new CurlWrapper();
         $order = wc_get_order($order_id);
         $data = array(
@@ -28,7 +28,7 @@ class API {
             "webhook" => sprintf("%s/wp-json/lnbits_satspay_server/v1/payment_complete/%s", get_site_url(), $order_id),
             "completelink" => $order->get_checkout_order_received_url(),
             "completelinktext" => "Payment Received. Go Back",
-            "time"=> 60,
+            "time"=> intval($invoice_expiry_time),
             "amount"=> $amount
         );
         $headers = array(

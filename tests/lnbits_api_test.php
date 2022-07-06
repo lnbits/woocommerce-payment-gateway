@@ -28,7 +28,7 @@ class LNbitsAPITest extends WP_UnitTestCase {
 
 	public function test_create_invoice_and_check() {
 		$api = create_api();
-		$r = $api->createCharge(10, "Testing invoice", 1000);
+		$r = $api->createCharge(10, "Testing invoice", 1000, 60);
 		$this->assertEquals(200, $r['status']);
 		$this->assertArrayHasKey('payment_hash', $r['response']);
 		$this->assertArrayHasKey('payment_request', $r['response']);
