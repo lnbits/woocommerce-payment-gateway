@@ -212,7 +212,7 @@ function lnbits_satspay_server_init()
             $order = wc_get_order($order_id);
 
             // This will be stored in the invoice (ie. can be used to match orders in LNbits)
-            $memo = " Order=" . $order->get_id() . " Total=" . $order->get_total() . get_woocommerce_currency();
+            $memo = get_bloginfo('name') . " Order #" . $order->get_id() . " Total=" . $order->get_total() . get_woocommerce_currency();
 
             $amount = Utils::convert_to_satoshis($order->get_total(), get_woocommerce_currency());
 
