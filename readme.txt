@@ -8,11 +8,11 @@ License: MIT
 License URI: https://github.com/lnbits/woocommerce-payment-gateway/blob/main/LICENSE
 Tags: bitcoin, lightning, lnbits, lightning network, accept bitcoin, accept lightning, instant bitcoin, bitcoin processor, bitcoin gateway, payment gateway, payment module, bitcoin module, bitcoin woocommerce, btc
 
-Accept Bitcoin on your WooCommerce store, instantly over Lightning, and without extra fees.
+Accept Bitcoin on your WooCommerce store, on chain or over Lightning without any fees.
 
 == Description ==
 
-Accept Bitcoin onchain and with Lightning on your WooCommerce store without any fees.
+Accept Bitcoin on chain and with Lightning on your WooCommerce store without any fees.
 
 == Issues and Development ==
 
