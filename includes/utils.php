@@ -4,7 +4,7 @@ namespace LNbitsSatsPayPlugin;
 
 class Utils {
     public static function convert_to_satoshis($amount, $currency) {
-        if(strtolower($currency) !== 'btc') {
+        if(strtolower($currency) !== 'sat' && strtolower($currency) !== 'btc') {
             error_log($amount . " " . $currency);
             $c    = new CurlWrapper();
             $resp = $c->get('https://blockchain.info/tobtc', array(
@@ -16,10 +16,10 @@ class Utils {
                 throw new \Exception('Blockchain.info request for currency conversion failed. Got status ' . $resp['status']);
             }
 
-            return (int) round($resp['response'] * 100000000);
+            return (int) round($resp['response'] * 1);
         }
         else {
-            return intval($amount * 100000000);
+            return intval($amount * 1);
         }
     }
 }
