@@ -48,7 +48,90 @@ function lnbits_satspay_server_init()
 
     add_filter('woocommerce_payment_gateways', 'add_lnbits_satspay_server_gateway');
 
+    add_action("init", "btcpayment_callback_endpoint");
+    function btcpayment_callback_endpoint()
+    {
+        add_rewrite_rule("^btcpayment-callback/([^/]+)/?", 'index.php?btcpayment_callback=1&order_id=$matches[1]', "top");
+    }
 
+    add_action("query_vars", "btcpayment_callback_query_vars");
+    function btcpayment_callback_query_vars($vars)
+    {
+        $vars[] = "btcpayment_callback";
+        $vars[] = "order_id";
+        return $vars;
+    }
+
+    add_action("template_redirect", "btcpayment_callback_template_redirect");
+    function btcpayment_callback_template_redirect()
+    {
+        if (get_query_var("btcpayment_callback"))
+        {
+            // Check for the request method
+            if ($_SERVER["REQUEST_METHOD"] === "POST")
+            {
+                $order_id = get_query_var("order_id"); // Retrieve the parameter value from the URL
+                $postBody = file_get_contents("php://input");
+                $postData = json_decode($postBody, true); // Assuming it's JSON data
+                // Use $postData for further processing
+                if ($postData !== null)
+                {
+                    // Get charge id from payload
+                    $request_charge = $postData["id"];
+
+                    // Get charge id from order
+                    $order = wc_get_order($order_id);
+                    $order_charge_id = $order->get_meta("lnbits_satspay_server_payment_id");
+
+                    // Check if order charge id equals charge id in request
+                    if ($request_charge == $order_charge_id)
+                    {
+                        // If not already marked as paid.
+                        if ($order && !$order->is_paid())
+                        {
+                            // Get an instance of WC_Gateway_LNbits_Satspay_Server
+                            $lnbits_gateway = new WC_Gateway_LNbits_Satspay_Server();
+                            $lnbits_server_url = $lnbits_gateway->get_option("lnbits_satspay_server_url");
+                            $url = $lnbits_server_url . "/satspay/api/v1/charge/balance/" . $order_charge_id;
+
+                            // Call the check_payment method
+                            $r = $lnbits_gateway->api->checkChargePaid($order_charge_id);
+                            if ($r["status"] == 200)
+                            {
+                                sleep(1); // delay to prevent duplicate message
+                                $order = wc_get_order($order_id); // get latest order status
+                                if ($r["response"]["paid"] == true && !$order->is_paid())
+                                {
+                                    $order->add_order_note("Payment marked completed.");
+                                    $order->payment_complete();
+                                    $order->save();
+                                }
+                            }
+                            die();
+                        }
+                    }
+                    else
+                    {
+                        header("HTTP/1.1 400 Bad Request");
+                        echo "400 Bad Request";
+                        die();
+                    }
+                }
+                else
+                {
+                    header("HTTP/1.1 400 Bad Request");
+                    echo "400 Bad Request";
+                    die();
+                }
+            }
+            else
+            {
+                header("HTTP/1.1 405 Method Not Allowed");
+                echo "Method Not Allowed";
+                die();
+            }
+        }
+    }
 
     // Defined here, because it needs to be defined after WC_Payment_Gateway is already loaded.
     class WC_Gateway_LNbits_Satspay_Server extends WC_Payment_Gateway {
