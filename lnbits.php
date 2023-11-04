@@ -316,10 +316,14 @@ function lnbits_satspay_server_init()
 
             if ($r['status'] == 200) {
                 if ($r['response']['paid'] == true) {
-                    $order->add_order_note('Payment is settled and has been credited to your LNbits account. The order can be securely delivered to the customer.');
-                    $order->payment_complete();
-                    $order->save();
-                    error_log("PAID");
+                                    // Only process if not already marked paid via callback
+                    if ($order && !$order->is_paid())
+                    {
+                        $order->add_order_note('Payment is settled and has been credited to your LNbits account. The order can be securely delivered to the customer.');
+                        $order->payment_complete();
+                        $order->save();
+                        error_log("PAID");
+                    }
                 }
             } else {
                 // TODO: handle non 200 response status
