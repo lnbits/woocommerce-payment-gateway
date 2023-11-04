@@ -48,35 +48,6 @@ function lnbits_satspay_server_init()
 
     add_filter('woocommerce_payment_gateways', 'add_lnbits_satspay_server_gateway');
 
-    /**
-     * Grab latest post title by an author!
-     */
-    function lnbits_satspay_server_add_payment_complete_callback($data)
-    {
-        $order_id = $data["id"];
-        $order    = wc_get_order($order_id);
-        $order->add_order_note('Payment is settled and has been credited to your LNbits account. Purchased goods/services can be securely delivered to the customer.');
-        $payment_hash = $order->get_meta('lnbits_satspay_server_payment_hash');
-        $order->payment_complete();
-        $order->save();
-        error_log("PAID");
-        echo(json_encode(array(
-            'result'   => 'success',
-            'redirect' => $order->get_checkout_order_received_url(),
-            'paid'     => true
-        )));
-
-        if (empty($order_id)) {
-            return null;
-        }
-    }
-
-    add_action("rest_api_init", function () {
-        register_rest_route("lnbits_satspay_server/v1", "/payment_complete/(?P<id>\d+)", array(
-            "methods"  => "GET",
-            "callback" => "lnbits_satspay_server_add_payment_complete_callback",
-        ));
-    });
 
 
     // Defined here, because it needs to be defined after WC_Payment_Gateway is already loaded.
