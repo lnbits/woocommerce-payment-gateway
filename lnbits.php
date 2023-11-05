@@ -98,11 +98,11 @@ function lnbits_satspay_server_init()
                             $r = $lnbits_gateway->api->checkChargePaid($order_charge_id);
                             if ($r["status"] == 200)
                             {
-                                sleep(1); // delay to prevent duplicate message
-                                $order = wc_get_order($order_id); // get latest order status
+                                //sleep(5); // delay to prevent duplicate message during payout
+                                //$order = wc_get_order($order_id); // get latest order status
                                 if ($r["response"]["paid"] == true && !$order->is_paid())
                                 {
-                                    $order->add_order_note("Payment marked completed.");
+                                    $order->add_order_note("Payment completed (webhook).");
                                     $order->payment_complete();
                                     $order->save();
                                 }
@@ -269,7 +269,7 @@ function lnbits_satspay_server_init()
             $memo = get_bloginfo('name') . " Order #" . $order->get_id() . " Total=" . $order->get_total() . get_woocommerce_currency();
 
             $amount = Utils::convert_to_satoshis($order->get_total(), get_woocommerce_currency());
-
+			error_log("Sat Amount=" . $amount);
             $invoice_expiry_time = $this->get_option('lnbits_satspay_expiry_time');
             // Call LNbits server to create invoice
             $r = $this->api->createCharge($amount, $memo, $order_id, $invoice_expiry_time);
@@ -293,7 +293,7 @@ function lnbits_satspay_server_init()
                 );
             } else {
                 error_log("LNbits API failure. Status=" . $r['status']);
-                error_log($r['response']);
+				error_log(json_encode($r['response']));
 
                 return array(
                     "result"   => "failure",
@@ -316,15 +316,10 @@ function lnbits_satspay_server_init()
 
             if ($r['status'] == 200) {
                 if ($r['response']['paid'] == true) {
-                                    // Only process if not already marked paid via callback
-                    if ($order && !$order->is_paid())
-                    {
-                        $order->add_order_note('Payment is settled and has been credited to your LNbits account. The order can be securely delivered to the customer.');
+                        $order->add_order_note('Payment completed (checkout).');
                         $order->payment_complete();
                         $order->save();
-                        error_log("PAID");
                     }
-                }
             } else {
                 // TODO: handle non 200 response status
             }
