@@ -89,17 +89,11 @@ function lnbits_satspay_server_init()
                         // If not already marked as paid.
                         if ($order && !$order->is_paid())
                         {
-                            // Get an instance of WC_Gateway_LNbits_Satspay_Server
+                            // Get an instance of WC_Gateway_LNbits_Satspay_Server, call check_payment method
                             $lnbits_gateway = new WC_Gateway_LNbits_Satspay_Server();
-                            $lnbits_server_url = $lnbits_gateway->get_option("lnbits_satspay_server_url");
-                            $url = $lnbits_server_url . "/satspay/api/v1/charge/balance/" . $order_charge_id;
-
-                            // Call the check_payment method
                             $r = $lnbits_gateway->api->checkChargePaid($order_charge_id);
                             if ($r["status"] == 200)
                             {
-                                //sleep(5); // delay to prevent duplicate message during payout
-                                //$order = wc_get_order($order_id); // get latest order status
                                 if ($r["response"]["paid"] == true && !$order->is_paid())
                                 {
                                     $order->add_order_note("Payment completed (webhook).");
