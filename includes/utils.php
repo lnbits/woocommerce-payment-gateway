@@ -16,10 +16,10 @@ class Utils {
                 throw new \Exception('Blockchain.info request for currency conversion failed. Got status ' . $resp['status']);
             }
 
-            return (int) round($resp['response'] * 1);
+            return (int) round($resp['response'] * 100000000);
         }
         else {
-            return intval($amount * 1);
+            return intval($amount * 100000000);
         }
     }
 }
