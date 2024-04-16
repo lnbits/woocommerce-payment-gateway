@@ -217,6 +217,7 @@ function lnbits_satspay_server_init()
             $amount = Utils::convert_to_satoshis($order->get_total(), get_woocommerce_currency());
 
             $invoice_expiry_time = $this->get_option('lnbits_satspay_expiry_time');
+
             // Call LNbits server to create invoice
             $r = $this->api->createCharge($amount, $memo, $order_id, $invoice_expiry_time);
 
@@ -239,7 +240,7 @@ function lnbits_satspay_server_init()
                 );
             } else {
                 error_log("LNbits API failure. Status=" . $r['status']);
-                error_log($r['response']);
+                error_log(var_export($r['response'], true));
 
                 return array(
                     "result"   => "failure",
