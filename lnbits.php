@@ -315,7 +315,8 @@ function lnbits_satspay_server_init()
                         $order->save();
                     }
             } else {
-                // TODO: handle non 200 response status
+                error_log("LNbits API failure. Status=" . $r['status']);
+                error_log(var_export($r['response'], true));
             }
             die();
         }
