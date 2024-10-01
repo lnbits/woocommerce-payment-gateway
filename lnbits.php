@@ -4,7 +4,7 @@
 Plugin Name: LNbits - Bitcoin Onchain and Lightning Payment Gateway
 Plugin URI: https://github.com/lnbits/woocommerce-payment-gateway
 Description: Accept Bitcoin on your WooCommerce store both on-chain and with Lightning with LNbits
-Version: 0.0.1
+Version: 0.0.5
 Author: LNbits
 Author URI: https://github.com/lnbits
 */
@@ -265,6 +265,7 @@ function lnbits_satspay_server_init()
             $amount = Utils::convert_to_satoshis($order->get_total(), get_woocommerce_currency());
 			error_log("Sat Amount=" . $amount);
             $invoice_expiry_time = $this->get_option('lnbits_satspay_expiry_time');
+
             // Call LNbits server to create invoice
             $r = $this->api->createCharge($amount, $memo, $order_id, $invoice_expiry_time);
 
@@ -287,7 +288,7 @@ function lnbits_satspay_server_init()
                 );
             } else {
                 error_log("LNbits API failure. Status=" . $r['status']);
-				error_log(json_encode($r['response']));
+                error_log(var_export($r['response'], true));
 
                 return array(
                     "result"   => "failure",
