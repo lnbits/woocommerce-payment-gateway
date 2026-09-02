@@ -18,7 +18,7 @@ class API {
         $this->watch_only_wallet_id = $watch_only_wallet_id;
     }
 
-    public function createCharge($amount, $memo, $order_id, $invoice_expiry_time = 1440) {
+    public function createCharge($amount, $memo, $order_id, $webhook, $invoice_expiry_time = 1440) {
         $c = new CurlWrapper();
         $order = wc_get_order($order_id);
         $currency = strtolower($order->get_currency());
@@ -27,7 +27,7 @@ class API {
             "onchainwallet" => $this->watch_only_wallet_id,
             "lnbitswallet" => $this->wallet_id,
             "description" => $memo,
-            "webhook" => rest_url("lnbits_satspay_server/v1/payment_complete/{$order_id}"),
+            "webhook" => $webhook,
             "completelink" => $order->get_checkout_order_received_url(),
             "completelinktext" => "Return to Store",
             "time" => intval($invoice_expiry_time),

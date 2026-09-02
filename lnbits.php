@@ -49,19 +49,40 @@ function lnbits_satspay_server_init()
     add_filter('woocommerce_payment_gateways', 'add_lnbits_satspay_server_gateway');
 
     /**
-     * Grab latest post title by an author!
+     * Handle a payment notification from SatsPay.
+     *
+     * The callback URL contains a random, per-order secret.  Its presence alone
+     * is not sufficient to complete an order: the charge is always checked with
+     * LNbits using the merchant API key before the order state is changed.
      */
     function lnbits_satspay_server_add_payment_complete_callback($data) {
-        $order_id = $data["id"];
+        $order_id = absint($data['id']);
+        $callback_token = (string) $data['token'];
         $order = wc_get_order($order_id);
-        
+
         if (empty($order)) {
-            return wp_send_json(['status' => 'error', 'message' => 'Order not found']);
+            return new WP_Error('lnbits_order_not_found', 'Order not found', array('status' => 404));
+        }
+
+        $expected_token = (string) $order->get_meta('lnbits_satspay_server_callback_token');
+        if (empty($expected_token) || !hash_equals($expected_token, $callback_token)) {
+            return new WP_Error('lnbits_invalid_callback_token', 'Invalid callback token', array('status' => 403));
         }
 
         // Check if order is already paid
         if ($order->is_paid()) {
-            return wp_send_json(['status' => 'success', 'message' => 'Order already paid']);
+            return new WP_REST_Response(array('status' => 'success', 'message' => 'Order already paid'), 200);
+        }
+
+        $payment_id = $order->get_meta('lnbits_satspay_server_payment_id');
+        if (empty($payment_id)) {
+            return new WP_Error('lnbits_charge_not_found', 'Charge not found for order', array('status' => 400));
+        }
+
+        $gateway = new WC_Gateway_LNbits_Satspay_Server();
+        $result = $gateway->is_charge_paid($payment_id);
+        if ($result !== true) {
+            return new WP_Error('lnbits_payment_not_settled', 'Payment has not been confirmed by LNbits', array('status' => 409));
         }
 
         // Add order note
@@ -85,12 +106,12 @@ function lnbits_satspay_server_init()
             WC()->cart->empty_cart();
         }
 
-        return wp_send_json(['status' => 'success']);
+        return new WP_REST_Response(array('status' => 'success'), 200);
     }
 
     add_action("rest_api_init", function () {
-        register_rest_route("lnbits_satspay_server/v1", "/payment_complete/(?P<id>\d+)", array(
-            "methods" => "POST,GET",
+        register_rest_route("lnbits_satspay_server/v1", "/payment_complete/(?P<id>\d+)/(?P<token>[A-Za-z0-9]+)", array(
+            "methods" => "POST",
             "callback" => "lnbits_satspay_server_add_payment_complete_callback",
             "permission_callback" => "__return_true"
         ));
@@ -289,18 +310,31 @@ function lnbits_satspay_server_init()
         public function process_payment($order_id)
         {
             $order = wc_get_order($order_id);
-            
+
             $memo = get_bloginfo('name') . " Order #" . $order->get_id();
             $invoice_expiry_time = $this->get_option('lnbits_satspay_expiry_time');
-            
+            $callback_token = wp_generate_password(64, false, false);
+            $callback_url = rest_url(sprintf(
+                'lnbits_satspay_server/v1/payment_complete/%d/%s',
+                $order->get_id(),
+                $callback_token
+            ));
+
             // Call LNbits server to create invoice
-            $r = $this->api->createCharge($order->get_total(), $memo, $order_id, $invoice_expiry_time);
+            $r = $this->api->createCharge(
+                $order->get_total(),
+                $memo,
+                $order->get_id(),
+                $callback_url,
+                $invoice_expiry_time
+            );
             
             if ($r['status'] === 200) {
                 $resp = $r['response'];
                 $order->update_meta_data('lnbits_satspay_server_payment_id', $resp['id']);
                 $order->update_meta_data('lnbits_satspay_server_invoice', $resp['payment_request']);
                 $order->update_meta_data('lnbits_satspay_server_payment_hash', $resp['payment_hash']);
+                $order->update_meta_data('lnbits_satspay_server_callback_token', $callback_token);
                 $order->save();
                 
                 // Set order status to pending payment
@@ -349,6 +383,16 @@ function lnbits_satspay_server_init()
                     $order->save();
                 }
             }
+        }
+
+        /**
+         * Check a SatsPay charge using merchant credentials.
+         */
+        public function is_charge_paid($payment_id) {
+            $response = $this->api->checkChargePaid($payment_id);
+
+            return $response['status'] === 200
+                && !empty($response['response']['paid']);
         }
     }
 
