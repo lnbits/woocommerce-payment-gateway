@@ -9,7 +9,7 @@ Follow the instructions at https://github.com/lnbits/woocommerce-payment-gateway
 and setup the plugin.
 
 You will need access to an LNbits instance to use this plugin. You can use the _demo_ LNbits
-instance at https://legend.lnbits.com/ to test this plugin.
+instance at https://demo.lnbits.com/ to _test_ this plugin.
 
 ## License
 This plugin is released under the [MIT license](https://github.com/lnbits/woocommerce-payment-gateway/blob/main/LICENSE).
