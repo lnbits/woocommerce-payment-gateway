@@ -1,9 +1,9 @@
 === # LNbits - Bitcoin Lightning and Onchain Payment Gateway ===
 Contributors: bclnbits, philosopher_phaedrus
 Requires at least: 5.1
-Tested up to: 6.8.1
+Tested up to: 7.1
 Requires PHP: 7.0
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: MIT
 License URI: https://github.com/lnbits/woocommerce-payment-gateway/blob/main/LICENSE
 Tags: bitcoin, lightning, lnbits, lightning network, payment gateway
